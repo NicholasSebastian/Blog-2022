@@ -1,15 +1,19 @@
 import type { NextPage, GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { getPosts } from '../lib/notion';
-import { IPost } from './posts/[id]';
+import dayjs from 'dayjs';
+import { getPosts, PostProperties } from '../lib/notion';
+import { slugify } from '../utils/slug';
 
 const Home: NextPage<IPageProps> = ({ posts }) => {
   return (
     <main>
       <h1>Latest Posts</h1>
       {posts.map(post => (
-        <Link href={`/posts/${post.id}`} key={post.id}>
-          <div>{post.name}</div>
+        <Link href={`/posts/${slugify(post.name)}`} key={post.id}>
+          <div>
+            <div>{post.name}</div>
+            <div>{dayjs(post.created_on).format('MMMM D, YYYY')}</div>
+          </div>
         </Link>
       ))}
     </main>
@@ -19,20 +23,12 @@ const Home: NextPage<IPageProps> = ({ posts }) => {
 export default Home;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { results } = await getPosts();
+  const posts = await getPosts();
   return {
-    props: {
-      posts: results.map((post: any) => ({
-        id: post.id,
-        created_on: post.created_time,
-        name: post.properties.Name.title[0].plain_text,
-        tags: post.properties.Tags.multi_select.map((tag: any) => tag.name),
-        cover: post.cover.file.url
-      }))
-    }
+    props: { posts }
   };
 }
 
 interface IPageProps {
-  posts: Array<IPost>
+  posts: Array<PostProperties>
 }

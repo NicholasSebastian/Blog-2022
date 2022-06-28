@@ -2,15 +2,16 @@ import { FC, PropsWithChildren } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 
-const DEFAULT_TITLE = "Blog";
-
 const Layout: FC<PropsWithChildren<ILayoutProps>> = (props) => {
   const { children, title, description } = props;
+  const _title = title ?? "Blog";
   return (
     <>
       <Head>
-        <title>{title ?? DEFAULT_TITLE}</title>
-        <meta name="description" content={description} />
+        <title>{_title}</title>
+        <meta name='og:title' title='og:title' content={_title} />
+        <meta name='description' title='description' content={description} />
+        <meta name='og:description' title='og:description' content={description} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
