@@ -17,7 +17,7 @@ const Layout: FC<PropsWithChildren<ILayoutProps>> = (props) => {
       <header>
         <Link href='/'>Home</Link>
       </header>
-      <main>{children}</main>
+      {children}
       <footer></footer>
     </>
   );
